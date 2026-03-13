@@ -1,0 +1,54 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://daria:password@localhost:27017/payment_db?authSource=admin
+
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: payment-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      retries: 5
+      retry.backoff.ms: 1000
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
+kafka:
+  topic:
+    order:
+      name: CREATE_ORDER
+      partitions: 1
+      replicas: 1
+    payment:
+      name: CREATE_PAYMENT
+      partitions: 1
+      replicas: 1
+
+server:
+  port: 8084
+
+service:
+  user:
+    url: http://user-service:8080
+  auth:
+    url: http://auth-service:8081
+  order:
+    url: http://order-service:8082
+
+logging:
+  level:
+    root: INFO
+    org.springframework.kafka: INFO
+
+random-number-api:
+  baseUrl: "http://www.randomnumberapi.com/api/v1.0"
