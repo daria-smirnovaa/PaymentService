@@ -1,0 +1,24 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://daria:password@localhost:27017/payment_db?authSource=payment_db
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: order-service-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    order:
+      name: CREATE_ORDER
+      partitions: 1
+      replicas: 1
+    payment:
+      name: CREATE_PAYMENT
+      partitions: 1
+      replicas: 1
