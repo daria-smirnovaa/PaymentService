@@ -31,8 +31,23 @@ public class PaymentService {
         Payment payment = paymentMapper.toEntity(paymentRequest);
         payment.setId(UUID.randomUUID());
         payment.setTimestamp(LocalDateTime.now());
-        payment.setStatus(randomNumberService.isEvenNumber() ? Status.SUCCESS : Status.FAILED);
+
+        try {
+            Boolean isEven = randomNumberService.isEvenNumber();
+            if (isEven != null) {
+                payment.setStatus(isEven ? Status.SUCCESS : Status.FAILED);
+                log.info("Random number service returned: {}, status: {}", isEven, payment.getStatus());
+            } else {
+                log.warn("Random number service returned null, setting status to SUCCESS");
+                payment.setStatus(Status.SUCCESS);
+            }
+        } catch (Exception e) {
+            log.error("Failed to get random number from external API: {}", e.getMessage());
+            payment.setStatus(Status.SUCCESS);
+        }
+
         Payment savedPayment = paymentRepository.save(payment);
+        log.info("Payment saved with id: {}, status: {}", savedPayment.getId(), savedPayment.getStatus());
 
         PaymentEvent event = PaymentEvent.builder()
                 .id(savedPayment.getId())

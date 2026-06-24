@@ -12,7 +12,7 @@ public class RandomNumberService {
 
     public Boolean isEvenNumber() {
         Integer[] numbers = webClient.get()
-                .uri("/randomnumber?min=1&max=10&count=1")
+                .uri("/generateNumbers?min=1&max=10&limit=1")
                 .retrieve()
                 .bodyToMono(Integer[].class)
                 .block();
