@@ -51,4 +51,4 @@ logging:
     org.springframework.kafka: INFO
 
 random-number-api:
-  baseUrl: "http://www.randomnumberapi.com/api/v1.0"
+  baseUrl: "https://api.randogram.ru"
